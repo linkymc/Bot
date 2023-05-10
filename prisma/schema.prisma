@@ -3,21 +3,26 @@
 
 generator client {
     provider      = "prisma-client-js"
-    binaryTargets = ["native"]
+    binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = "file:dev.db"
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model Sessions {
-    id String @id @default(cuid())
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    discordId String
+    username  String
+    status    String   @default("pending")
 }
 
 model Server {
     // Guild ID
-    id     String  @id
+    id         String  @id
     // API Key
-    apiKey String?
+    apiKey     String
+    linkedRole String?
 }
