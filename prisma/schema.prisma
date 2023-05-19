@@ -22,7 +22,11 @@ model Sessions {
 model Server {
     // Guild ID
     id         String  @id
+    inGuild    Boolean @default(false)
     // API Key
     apiKey     String
+    name       String
     linkedRole String?
+    // Managed users
+    managers   String
 }
