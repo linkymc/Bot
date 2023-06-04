@@ -1,8 +1,22 @@
-import { ApplicationCommandOptionType, CommandInteraction } from 'discord.js';
+import { ApplicationCommandOptionType, CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Discord, Slash, SlashOption } from 'discordx';
 import { prisma, pusher } from '..';
+import axios from 'axios';
+import Colors from '../constants/Colors';
 
 const dayjs = require('dayjs');
+
+function addDashes(uuid: string): string {
+	const segments = [
+		uuid.substr(0, 8),
+		uuid.substr(8, 4),
+		uuid.substr(12, 4),
+		uuid.substr(16, 4),
+		uuid.substr(20)
+	];
+
+	return segments.join('-');
+}
 
 @Discord()
 class LinkCommand {
@@ -53,10 +67,17 @@ class LinkCommand {
 			return;
 		}
 
+		const uuidResp: {
+			data: {
+				id: string;
+			};
+		} = await axios.get(`https://api.mojang.com/users/profiles/minecraft/${username}`);
+
 		const session = await prisma.sessions.create({
 			data: {
 				discordId: interaction.user.id,
-				username
+				username,
+				uuid: addDashes(uuidResp.data.id)
 			}
 		});
 
@@ -66,8 +87,11 @@ class LinkCommand {
 			sessionId: session.id
 		});
 
+		const embed = new EmbedBuilder().setColor(Colors.pink).setTitle('Check in game');
+		embed.setDescription(`You should recieve a notification shortly!`);
+
 		interaction.editReply({
-			content: 'Check in game for a approval request.'
+			embeds: [embed]
 		});
 	}
 }

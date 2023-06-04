@@ -16,6 +16,7 @@ model Sessions {
     createdAt DateTime @default(now())
     discordId String
     username  String
+    uuid String
     status    String   @default("pending")
 }
 

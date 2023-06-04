@@ -10,5 +10,6 @@ export default {
 	blue: parseColor('#9fd7ee'),
 	green: parseColor('#9beba7'),
 	red: parseColor('#ff697b'),
+	pink: parseColor('#ffd4e3'),
 	parseColor
 };
