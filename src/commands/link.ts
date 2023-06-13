@@ -31,8 +31,6 @@ class LinkCommand {
 		username: string,
 		interaction: CommandInteraction
 	) {
-		// Arozeeeee make these messages pretty, ty 💜
-
 		await interaction.deferReply({
 			ephemeral: true
 		});
