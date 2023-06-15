@@ -18,6 +18,12 @@ function addDashes(uuid: string): string {
 	return segments.join('-');
 }
 
+interface UUIDResponse {
+	data: {
+		id: string;
+	};
+}
+
 @Discord()
 class LinkCommand {
 	@Slash({ description: 'Link your Minecraft account' })
@@ -65,11 +71,16 @@ class LinkCommand {
 			return;
 		}
 
-		const uuidResp: {
-			data: {
-				id: string;
-			};
-		} = await axios.get(`https://api.mojang.com/users/profiles/minecraft/${username}`);
+		let uuidResp: UUIDResponse;
+
+		try {
+			uuidResp = await axios.get(`https://api.mojang.com/users/profiles/minecraft/${username}`);
+		} catch (err) {
+			interaction.editReply({
+				content: "You've provided an invalid username :c"
+			});
+			return;
+		}
 
 		const session = await prisma.sessions.create({
 			data: {
